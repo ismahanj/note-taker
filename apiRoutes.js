@@ -1,6 +1,6 @@
 var fs = require("fs"); 
 var path = require("path"); 
-var db = fs.readFileSync(path.join(__dirname, "../db/db.json"), "utf8"); 
+var db = fs.readFileSync(path.join(__dirname, "./db/db.json"), "utf8"); 
 db = JSON.parse(db)
 
 
@@ -21,28 +21,29 @@ function apiRoutes(app) {
         let noteId = newNotes.title + (Math.floor(Math.random()*10)); 
         newNotes.id = noteId;
         db.push(newNotes);
-        fs.writeFile(path.join(__dirname, "../db/db.json"), JSON.stringify(db), function(req,res){
-          res.json(db);
+        fs.writeFile(path.join(__dirname, "./db/db.json"), JSON.stringify(db), function(req,res){
+          
           console.log("added notes")
         }); 
-        
+        res.json(newNotes.id);
     });
 
     app.delete("/api/notes/:id", function(req,res){
-      const deleteNotes = req.params.id; 
-      let savedNotes = []; 
-      for (let i = 0; i < savedNotes.length; i++) {
-        if(db[i] === deleteNotes){
-          savedNotes.push(db[i])
+      const deleteNote = req.params.id; 
+      let savedNote = []; 
+      for (let i = 0; i < db.length; i++) {
+        console.log(deleteNote)
+        if(db[i].id !== deleteNote){
+          savedNote.push(db[i].id)
         } 
       }
-     var db = [...savedNotes]
 
-     fs.writeFile(".../db/db.json", JSON.stringify(savedNotes), function(err){
+     fs.writeFile(path.join(dirname, "./db/db.json"), JSON.stringify(savedNote), function(err){
        if(err) throw err; 
        res.send("notes deleted")
        console.log("notes deleted")
-     }); 
+      });
+      var db = [...savedNote]
     })}; 
    
     module.exports = apiRoutes
